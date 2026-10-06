@@ -1,2 +1,5 @@
-# Navi6
-Navi6 is a Navidrome client for ios 6
+# Navi6 — Navidrome client for iOS 6 (iPhone + iPad)
+
+- Customazible tabs
+- Offline mode
+- Beautiful interface

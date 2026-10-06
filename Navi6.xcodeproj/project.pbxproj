@@ -1,0 +1,397 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		872F1E56A01302EFA5861BE8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A47F12E8AE0EA31991E87378 /* AppDelegate.m */; };
+		D9F31D27F85D96F37DE5B51C /* NVAlbumGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6F284AC80118BA35DC0471 /* NVAlbumGridViewController.m */; };
+		4A4BC16433E8E6FAF3370D13 /* NVBrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C08879083D8A17E47BE603 /* NVBrowserViewController.m */; };
+		650290A8C327D0749B611215 /* NVCells.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D6A78DE225561A0AE33A777 /* NVCells.m */; };
+		0386AD80C5CB87693662C4DC /* NVClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 0899E55EDD359FFB8D106F73 /* NVClient.m */; };
+		5BD70AB31626A1A63A105677 /* NVDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C90FAB09493EF7550B0355D4 /* NVDownloadManager.m */; };
+		958D849EBBA345C1FF85A4DD /* NVDownloadsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C7ED737B55880BCB6F868 /* NVDownloadsViewController.m */; };
+		917545EA5B7D4894D45C5B7B /* NVFavorites.m in Sources */ = {isa = PBXBuildFile; fileRef = BDC6524AAA07D0F606AA3927 /* NVFavorites.m */; };
+		2A7BBA592B0C22F4E2231750 /* NVFavoritesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D721E7ED9045AB1227995E85 /* NVFavoritesViewController.m */; };
+		4A106B1477CE769B5C36667F /* NVMiniPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 66193FAA6EE18F1527E4BDFA /* NVMiniPlayerView.m */; };
+		C60313C6F5DF37A96CBBD968 /* NVNowPlayingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16E814CDA8786D9E74B39FFC /* NVNowPlayingViewController.m */; };
+		21BC973932744447C4B2D096 /* NVPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 31E02D1BDEDBD203C263D68B /* NVPlayer.m */; };
+		E9101D28C790202FF91E84F1 /* NVSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC9542C9E2355D6D3928DDC7 /* NVSearchViewController.m */; };
+		F93C151EAFCA94E1B3146BF2 /* NVSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = B525B233813648621C432418 /* NVSettings.m */; };
+		A2B8AFB4AE5B5632AC87B4FC /* NVSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B45FD86F17245BBE3B01D194 /* NVSettingsViewController.m */; };
+		9C16E81EDC7D046958165303 /* NVTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = F1632737B09F0B0EBE324303 /* NVTheme.m */; };
+		6758156D7D91140D48E83AF5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D530188B72B1D303AB0C582A /* main.m */; };
+		234F268CA64282D247176BDD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0016568252D6527E0C0672A /* UIKit.framework */; };
+		415F16DEA39C9033A5C4B723 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7730DC414597A0ABB900B00D /* Foundation.framework */; };
+		620202A1D02BDBCAE4BE95C2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4EBD0E71F9ECEE94D1D5810 /* CoreGraphics.framework */; };
+		E61A32135D22F499820DDBF0 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EAABBD3A6A0ADEE8CC39C842 /* AVFoundation.framework */; };
+		128235771610B3A0D868EA5A /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0BBD61923198A7800A2452D4 /* MediaPlayer.framework */; };
+		364ED4235C769970F87BD116 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BA0D68DA17FB86DC6526EFA /* CoreMedia.framework */; };
+		EA30839236A8818EE7FDB8A4 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56A6662673C29F05FAA86D67 /* Security.framework */; };
+		FBA9BCA93C5D8B9F556D73E9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A105AAA559B754B763B78D8 /* QuartzCore.framework */; };
+		C201C6AE68BE1530D1088320 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCE0C3FDD16871119267D8A5 /* Default-568h@2x.png */; };
+		64143CABE0FD87178478177D /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 23224BBA3ED11C9F5FF18F1D /* Default-Landscape~ipad.png */; };
+		015E8B6BDFCFC6F515AE4504 /* Default-Landscape~ipad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A07DBD319FD321E780B24926 /* Default-Landscape~ipad@2x.png */; };
+		40F7F3A75903FEA25C4E7820 /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 6C4C920E283273618A101A15 /* Default-Portrait~ipad.png */; };
+		72497F408BF06BC287362F40 /* Default-Portrait~ipad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 722D5E615012617E25647956 /* Default-Portrait~ipad@2x.png */; };
+		D7D6324836CB95B022EEC4B1 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = C036010B2CADB87905CDA509 /* Default.png */; };
+		1331829CB508BD7A2F998234 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0F3BD5213EB3EA67E06CC95A /* Default@2x.png */; };
+		666994A8891ADA22D706350F /* Icon-72.png in Resources */ = {isa = PBXBuildFile; fileRef = 14582F8902CF480D70650469 /* Icon-72.png */; };
+		F26D970879EE0C95AD21AB87 /* Icon-72@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = D3CC2C69E6CC393B3397F8AE /* Icon-72@2x.png */; };
+		8836DF2BA218A77F3A36DBEE /* Icon.png in Resources */ = {isa = PBXBuildFile; fileRef = A5D08DFD976D37DCB6145095 /* Icon.png */; };
+		653A08F08A16BF0C51CFD862 /* Icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0FDE747620889C04EB94D7D0 /* Icon@2x.png */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		C5E015BF49563CF1BC7152DD /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		A47F12E8AE0EA31991E87378 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		BCE0C3FDD16871119267D8A5 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		23224BBA3ED11C9F5FF18F1D /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
+		A07DBD319FD321E780B24926 /* Default-Landscape~ipad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad@2x.png"; sourceTree = "<group>"; };
+		6C4C920E283273618A101A15 /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
+		722D5E615012617E25647956 /* Default-Portrait~ipad@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad@2x.png"; sourceTree = "<group>"; };
+		C036010B2CADB87905CDA509 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		0F3BD5213EB3EA67E06CC95A /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
+		14582F8902CF480D70650469 /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon-72.png; sourceTree = "<group>"; };
+		D3CC2C69E6CC393B3397F8AE /* Icon-72@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon-72@2x.png"; sourceTree = "<group>"; };
+		A5D08DFD976D37DCB6145095 /* Icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon.png; sourceTree = "<group>"; };
+		0FDE747620889C04EB94D7D0 /* Icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon@2x.png"; sourceTree = "<group>"; };
+		2C933708D1D8B604501D99C8 /* NVAlbumGridViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVAlbumGridViewController.h; sourceTree = "<group>"; };
+		6F6F284AC80118BA35DC0471 /* NVAlbumGridViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVAlbumGridViewController.m; sourceTree = "<group>"; };
+		1C4BEFFBFD7F3E5D9342B474 /* NVBrowserViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVBrowserViewController.h; sourceTree = "<group>"; };
+		90C08879083D8A17E47BE603 /* NVBrowserViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVBrowserViewController.m; sourceTree = "<group>"; };
+		1EF18A6AF4748FEA1BC612E8 /* NVCells.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVCells.h; sourceTree = "<group>"; };
+		8D6A78DE225561A0AE33A777 /* NVCells.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVCells.m; sourceTree = "<group>"; };
+		ADBF1B21C17F2B02137A54B9 /* NVClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVClient.h; sourceTree = "<group>"; };
+		0899E55EDD359FFB8D106F73 /* NVClient.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVClient.m; sourceTree = "<group>"; };
+		C548111F5167EF05FE79497A /* NVDownloadManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVDownloadManager.h; sourceTree = "<group>"; };
+		C90FAB09493EF7550B0355D4 /* NVDownloadManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVDownloadManager.m; sourceTree = "<group>"; };
+		109C4E5966364623CB1F1616 /* NVDownloadsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVDownloadsViewController.h; sourceTree = "<group>"; };
+		227C7ED737B55880BCB6F868 /* NVDownloadsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVDownloadsViewController.m; sourceTree = "<group>"; };
+		474FF462DA6F1FD0492E74EE /* NVFavorites.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVFavorites.h; sourceTree = "<group>"; };
+		BDC6524AAA07D0F606AA3927 /* NVFavorites.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVFavorites.m; sourceTree = "<group>"; };
+		F632681CD028C9C1B0FB36B6 /* NVFavoritesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVFavoritesViewController.h; sourceTree = "<group>"; };
+		D721E7ED9045AB1227995E85 /* NVFavoritesViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVFavoritesViewController.m; sourceTree = "<group>"; };
+		446240FA7D7BCAB3A11D7620 /* NVMiniPlayerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVMiniPlayerView.h; sourceTree = "<group>"; };
+		66193FAA6EE18F1527E4BDFA /* NVMiniPlayerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVMiniPlayerView.m; sourceTree = "<group>"; };
+		4075E21858025E904FD36C0F /* NVNowPlayingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVNowPlayingViewController.h; sourceTree = "<group>"; };
+		16E814CDA8786D9E74B39FFC /* NVNowPlayingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVNowPlayingViewController.m; sourceTree = "<group>"; };
+		CA1DC806B96F45CCEF2ADCC4 /* NVPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVPlayer.h; sourceTree = "<group>"; };
+		31E02D1BDEDBD203C263D68B /* NVPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVPlayer.m; sourceTree = "<group>"; };
+		2BD8E99519EF592F1033F269 /* NVSearchViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVSearchViewController.h; sourceTree = "<group>"; };
+		FC9542C9E2355D6D3928DDC7 /* NVSearchViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVSearchViewController.m; sourceTree = "<group>"; };
+		19AD6329F2359CAC598FBD01 /* NVSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVSettings.h; sourceTree = "<group>"; };
+		B525B233813648621C432418 /* NVSettings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVSettings.m; sourceTree = "<group>"; };
+		5E68033FB700427CB6EF8C33 /* NVSettingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVSettingsViewController.h; sourceTree = "<group>"; };
+		B45FD86F17245BBE3B01D194 /* NVSettingsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVSettingsViewController.m; sourceTree = "<group>"; };
+		110BEF0D140506EC3947E1C5 /* NVTheme.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVTheme.h; sourceTree = "<group>"; };
+		F1632737B09F0B0EBE324303 /* NVTheme.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVTheme.m; sourceTree = "<group>"; };
+		D55FD2661A8A8D7F68F6AF63 /* Navi6-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Navi6-Info.plist; sourceTree = "<group>"; };
+		7C5D02770BC5B3E92F7B4FCD /* Navi6-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Navi6-Prefix.pch; sourceTree = "<group>"; };
+		D530188B72B1D303AB0C582A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		E0016568252D6527E0C0672A /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		7730DC414597A0ABB900B00D /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		A4EBD0E71F9ECEE94D1D5810 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		EAABBD3A6A0ADEE8CC39C842 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		0BBD61923198A7800A2452D4 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		1BA0D68DA17FB86DC6526EFA /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		56A6662673C29F05FAA86D67 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		3A105AAA559B754B763B78D8 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		B1BBC4C8BC92635B607E95C6 /* Navi6.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Navi6.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8EBAEA4DEA451ACFD9A5BE9C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				234F268CA64282D247176BDD /* UIKit.framework in Frameworks */,
+				415F16DEA39C9033A5C4B723 /* Foundation.framework in Frameworks */,
+				620202A1D02BDBCAE4BE95C2 /* CoreGraphics.framework in Frameworks */,
+				E61A32135D22F499820DDBF0 /* AVFoundation.framework in Frameworks */,
+				128235771610B3A0D868EA5A /* MediaPlayer.framework in Frameworks */,
+				364ED4235C769970F87BD116 /* CoreMedia.framework in Frameworks */,
+				EA30839236A8818EE7FDB8A4 /* Security.framework in Frameworks */,
+				FBA9BCA93C5D8B9F556D73E9 /* QuartzCore.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B51CB8D49C82BA34CA541D9F = {
+			isa = PBXGroup;
+			children = (
+				79C58FE0BBDC01CE8C235DC5 /* Navi6 */,
+				C436FC3126005D460D9F8ADE /* Frameworks */,
+				3CD6C84AFB1CE02E31E9FD2E /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		79C58FE0BBDC01CE8C235DC5 /* Navi6 */ = {
+			isa = PBXGroup;
+			children = (
+				C5E015BF49563CF1BC7152DD /* AppDelegate.h */,
+				A47F12E8AE0EA31991E87378 /* AppDelegate.m */,
+				BCE0C3FDD16871119267D8A5 /* Default-568h@2x.png */,
+				23224BBA3ED11C9F5FF18F1D /* Default-Landscape~ipad.png */,
+				A07DBD319FD321E780B24926 /* Default-Landscape~ipad@2x.png */,
+				6C4C920E283273618A101A15 /* Default-Portrait~ipad.png */,
+				722D5E615012617E25647956 /* Default-Portrait~ipad@2x.png */,
+				C036010B2CADB87905CDA509 /* Default.png */,
+				0F3BD5213EB3EA67E06CC95A /* Default@2x.png */,
+				14582F8902CF480D70650469 /* Icon-72.png */,
+				D3CC2C69E6CC393B3397F8AE /* Icon-72@2x.png */,
+				A5D08DFD976D37DCB6145095 /* Icon.png */,
+				0FDE747620889C04EB94D7D0 /* Icon@2x.png */,
+				2C933708D1D8B604501D99C8 /* NVAlbumGridViewController.h */,
+				6F6F284AC80118BA35DC0471 /* NVAlbumGridViewController.m */,
+				1C4BEFFBFD7F3E5D9342B474 /* NVBrowserViewController.h */,
+				90C08879083D8A17E47BE603 /* NVBrowserViewController.m */,
+				1EF18A6AF4748FEA1BC612E8 /* NVCells.h */,
+				8D6A78DE225561A0AE33A777 /* NVCells.m */,
+				ADBF1B21C17F2B02137A54B9 /* NVClient.h */,
+				0899E55EDD359FFB8D106F73 /* NVClient.m */,
+				C548111F5167EF05FE79497A /* NVDownloadManager.h */,
+				C90FAB09493EF7550B0355D4 /* NVDownloadManager.m */,
+				109C4E5966364623CB1F1616 /* NVDownloadsViewController.h */,
+				227C7ED737B55880BCB6F868 /* NVDownloadsViewController.m */,
+				474FF462DA6F1FD0492E74EE /* NVFavorites.h */,
+				BDC6524AAA07D0F606AA3927 /* NVFavorites.m */,
+				F632681CD028C9C1B0FB36B6 /* NVFavoritesViewController.h */,
+				D721E7ED9045AB1227995E85 /* NVFavoritesViewController.m */,
+				446240FA7D7BCAB3A11D7620 /* NVMiniPlayerView.h */,
+				66193FAA6EE18F1527E4BDFA /* NVMiniPlayerView.m */,
+				4075E21858025E904FD36C0F /* NVNowPlayingViewController.h */,
+				16E814CDA8786D9E74B39FFC /* NVNowPlayingViewController.m */,
+				CA1DC806B96F45CCEF2ADCC4 /* NVPlayer.h */,
+				31E02D1BDEDBD203C263D68B /* NVPlayer.m */,
+				2BD8E99519EF592F1033F269 /* NVSearchViewController.h */,
+				FC9542C9E2355D6D3928DDC7 /* NVSearchViewController.m */,
+				19AD6329F2359CAC598FBD01 /* NVSettings.h */,
+				B525B233813648621C432418 /* NVSettings.m */,
+				5E68033FB700427CB6EF8C33 /* NVSettingsViewController.h */,
+				B45FD86F17245BBE3B01D194 /* NVSettingsViewController.m */,
+				110BEF0D140506EC3947E1C5 /* NVTheme.h */,
+				F1632737B09F0B0EBE324303 /* NVTheme.m */,
+				D55FD2661A8A8D7F68F6AF63 /* Navi6-Info.plist */,
+				7C5D02770BC5B3E92F7B4FCD /* Navi6-Prefix.pch */,
+				D530188B72B1D303AB0C582A /* main.m */,
+			);
+			path = Navi6;
+			sourceTree = "<group>";
+		};
+		C436FC3126005D460D9F8ADE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E0016568252D6527E0C0672A /* UIKit.framework */,
+				7730DC414597A0ABB900B00D /* Foundation.framework */,
+				A4EBD0E71F9ECEE94D1D5810 /* CoreGraphics.framework */,
+				EAABBD3A6A0ADEE8CC39C842 /* AVFoundation.framework */,
+				0BBD61923198A7800A2452D4 /* MediaPlayer.framework */,
+				1BA0D68DA17FB86DC6526EFA /* CoreMedia.framework */,
+				56A6662673C29F05FAA86D67 /* Security.framework */,
+				3A105AAA559B754B763B78D8 /* QuartzCore.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3CD6C84AFB1CE02E31E9FD2E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B1BBC4C8BC92635B607E95C6 /* Navi6.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		20AB5ECD4210D365327A918F /* Navi6 */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5A788AE5153DEB252C0EE806 /* Build configuration list for PBXNativeTarget "Navi6" */;
+			buildPhases = (
+				82C44D8FE7B3C6267A155461 /* Sources */,
+				8EBAEA4DEA451ACFD9A5BE9C /* Frameworks */,
+				6DA6BB2EDC81C499978486D9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Navi6;
+			productName = Navi6;
+			productReference = B1BBC4C8BC92635B607E95C6 /* Navi6.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2EC5218E0B5693A4C63895B3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "";
+			};
+			buildConfigurationList = E2E9C9023843F1E761758475 /* Build configuration list for PBXProject "Navi6" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = B51CB8D49C82BA34CA541D9F;
+			productRefGroup = 3CD6C84AFB1CE02E31E9FD2E /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				20AB5ECD4210D365327A918F /* Navi6 */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		6DA6BB2EDC81C499978486D9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C201C6AE68BE1530D1088320 /* Default-568h@2x.png in Resources */,
+				64143CABE0FD87178478177D /* Default-Landscape~ipad.png in Resources */,
+				015E8B6BDFCFC6F515AE4504 /* Default-Landscape~ipad@2x.png in Resources */,
+				40F7F3A75903FEA25C4E7820 /* Default-Portrait~ipad.png in Resources */,
+				72497F408BF06BC287362F40 /* Default-Portrait~ipad@2x.png in Resources */,
+				D7D6324836CB95B022EEC4B1 /* Default.png in Resources */,
+				1331829CB508BD7A2F998234 /* Default@2x.png in Resources */,
+				666994A8891ADA22D706350F /* Icon-72.png in Resources */,
+				F26D970879EE0C95AD21AB87 /* Icon-72@2x.png in Resources */,
+				8836DF2BA218A77F3A36DBEE /* Icon.png in Resources */,
+				653A08F08A16BF0C51CFD862 /* Icon@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		82C44D8FE7B3C6267A155461 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				872F1E56A01302EFA5861BE8 /* AppDelegate.m in Sources */,
+				D9F31D27F85D96F37DE5B51C /* NVAlbumGridViewController.m in Sources */,
+				4A4BC16433E8E6FAF3370D13 /* NVBrowserViewController.m in Sources */,
+				650290A8C327D0749B611215 /* NVCells.m in Sources */,
+				0386AD80C5CB87693662C4DC /* NVClient.m in Sources */,
+				5BD70AB31626A1A63A105677 /* NVDownloadManager.m in Sources */,
+				958D849EBBA345C1FF85A4DD /* NVDownloadsViewController.m in Sources */,
+				917545EA5B7D4894D45C5B7B /* NVFavorites.m in Sources */,
+				2A7BBA592B0C22F4E2231750 /* NVFavoritesViewController.m in Sources */,
+				4A106B1477CE769B5C36667F /* NVMiniPlayerView.m in Sources */,
+				C60313C6F5DF37A96CBBD968 /* NVNowPlayingViewController.m in Sources */,
+				21BC973932744447C4B2D096 /* NVPlayer.m in Sources */,
+				E9101D28C790202FF91E84F1 /* NVSearchViewController.m in Sources */,
+				F93C151EAFCA94E1B3146BF2 /* NVSettings.m in Sources */,
+				A2B8AFB4AE5B5632AC87B4FC /* NVSettingsViewController.m in Sources */,
+				9C16E81EDC7D046958165303 /* NVTheme.m in Sources */,
+				6758156D7D91140D48E83AF5 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		C58FC25381D5137ABBC95FAC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"ALWAYS_SEARCH_USER_PATHS" = "NO";
+				"ARCHS" = "$(ARCHS_STANDARD_32_BIT)";
+				"CLANG_ENABLE_OBJC_ARC" = "YES";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"COPY_PHASE_STRIP" = "NO";
+				"GCC_C_LANGUAGE_STANDARD" = "gnu99";
+				"GCC_DYNAMIC_NO_PIC" = "NO";
+				"GCC_OPTIMIZATION_LEVEL" = "0";
+				"GCC_PREPROCESSOR_DEFINITIONS" = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				"GCC_SYMBOLS_PRIVATE_EXTERN" = "NO";
+				"GCC_WARN_ABOUT_RETURN_TYPE" = "YES";
+				"GCC_WARN_UNINITIALIZED_AUTOS" = "YES";
+				"GCC_WARN_UNUSED_VARIABLE" = "YES";
+				"IPHONEOS_DEPLOYMENT_TARGET" = "6.0";
+				"ONLY_ACTIVE_ARCH" = "YES";
+				"SDKROOT" = "iphoneos";
+			};
+			name = Debug;
+		};
+		725E1A98782F0B07F5C66811 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"ALWAYS_SEARCH_USER_PATHS" = "NO";
+				"ARCHS" = "$(ARCHS_STANDARD_32_BIT)";
+				"CLANG_ENABLE_OBJC_ARC" = "YES";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"COPY_PHASE_STRIP" = "YES";
+				"GCC_C_LANGUAGE_STANDARD" = "gnu99";
+				"GCC_WARN_ABOUT_RETURN_TYPE" = "YES";
+				"GCC_WARN_UNINITIALIZED_AUTOS" = "YES";
+				"GCC_WARN_UNUSED_VARIABLE" = "YES";
+				"IPHONEOS_DEPLOYMENT_TARGET" = "6.0";
+				"OTHER_CFLAGS" = "-DNS_BLOCK_ASSERTIONS=1";
+				"SDKROOT" = "iphoneos";
+				"VALIDATE_PRODUCT" = "YES";
+			};
+			name = Release;
+		};
+		B610037C0DD239D4ADDBC540 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"GCC_PRECOMPILE_PREFIX_HEADER" = "YES";
+				"GCC_PREFIX_HEADER" = "Navi6/Navi6-Prefix.pch";
+				"INFOPLIST_FILE" = "Navi6/Navi6-Info.plist";
+				"PRODUCT_NAME" = "$(TARGET_NAME)";
+				"TARGETED_DEVICE_FAMILY" = "1,2";
+				"WRAPPER_EXTENSION" = "app";
+			};
+			name = Debug;
+		};
+		A06F997051B9D80CB707DC2A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				"GCC_PRECOMPILE_PREFIX_HEADER" = "YES";
+				"GCC_PREFIX_HEADER" = "Navi6/Navi6-Prefix.pch";
+				"INFOPLIST_FILE" = "Navi6/Navi6-Info.plist";
+				"PRODUCT_NAME" = "$(TARGET_NAME)";
+				"TARGETED_DEVICE_FAMILY" = "1,2";
+				"WRAPPER_EXTENSION" = "app";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E2E9C9023843F1E761758475 /* Build configuration list for PBXProject "Navi6" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C58FC25381D5137ABBC95FAC /* Debug */,
+				725E1A98782F0B07F5C66811 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5A788AE5153DEB252C0EE806 /* Build configuration list for PBXNativeTarget "Navi6" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B610037C0DD239D4ADDBC540 /* Debug */,
+				A06F997051B9D80CB707DC2A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2EC5218E0B5693A4C63895B3 /* Project object */;
+}
