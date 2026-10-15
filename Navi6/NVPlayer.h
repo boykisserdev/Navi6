@@ -11,7 +11,7 @@
 @property (nonatomic, readonly) NSTimeInterval currentTime;
 @property (nonatomic, readonly) NSTimeInterval duration;
 @property (nonatomic) BOOL shuffle;
-@property (nonatomic) NSInteger repeatMode;      // 0 off, 1 all, 2 one
+@property (nonatomic) NSInteger repeatMode;
 
 - (void)playSongs:(NSArray *)songs startIndex:(NSInteger)index;
 - (void)playSongs:(NSArray *)songs startIndex:(NSInteger)index shuffled:(BOOL)shuffled;
@@ -25,5 +25,6 @@
 - (void)addToQueue:(NSDictionary *)song;
 - (void)jumpToIndex:(NSInteger)index;
 - (void)removeQueueIndex:(NSInteger)index;
+- (void)moveQueueIndex:(NSInteger)from toIndex:(NSInteger)to;
 - (void)handleRemoteEvent:(UIEvent *)event;
 @end

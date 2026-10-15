@@ -2,6 +2,8 @@
 #import "NVBrowserViewController.h"
 #import "NVClient.h"
 #import "NVSettings.h"
+#import "NVOffline.h"
+#import "NVLocalLibrary.h"
 #import "NVTheme.h"
 
 @interface NVAlbumCell : UICollectionViewCell
@@ -42,7 +44,6 @@
 }
 @end
 
-
 @interface NVAlbumGridViewController ()
 @property (nonatomic, strong) NSMutableArray *albums;
 @property (nonatomic, strong) UILabel *statusLabel;
@@ -79,7 +80,38 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(offlineChanged) name:NVOfflineChangedNotification object:nil];
+    self.navigationItem.rightBarButtonItem = [NVOffline shared].isOffline ? [[NVOffline shared] cloudItem] : nil;
     if (!self.albums.count && !self.loading) [self loadFromOffset:0];
+    else if (self.albums.count && !self.loading && ![NVOffline shared].isOffline) [self silentRefresh];
+}
+
+- (void)silentRefresh {
+    [[NVClient shared] request:@"getAlbumList2" params:@{ @"type": @"alphabeticalByArtist", @"size": @500, @"offset": @0 } completion:^(NSDictionary *r, NSError *e) {
+        if (e || self.loading) return;
+        NSArray *list = NVArray(r[@"albumList2"][@"album"]);
+        BOOL same = list.count <= self.albums.count && (list.count >= 500 || list.count == self.albums.count);
+        for (NSUInteger i = 0; same && i < list.count; i++) {
+            if (![list[i][@"id"] isEqual:self.albums[i][@"id"]]) same = NO;
+        }
+        if (same) return;
+        self.albums = [list mutableCopy];
+        [self.collectionView reloadData];
+        if (list.count >= 500) { self.loading = YES; [self loadFromOffset:500]; }
+    }];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)offlineChanged {
+    self.navigationItem.rightBarButtonItem = [NVOffline shared].isOffline ? [[NVOffline shared] cloudItem] : nil;
+    [self.albums removeAllObjects];
+    [self.collectionView reloadData];
+    self.loading = NO;
+    [self loadFromOffset:0];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -88,6 +120,14 @@
 }
 
 - (void)loadFromOffset:(NSInteger)offset {
+    if ([NVOffline shared].isOffline) {
+        self.albums = [[NVLocalLibrary albums] mutableCopy];
+        self.statusLabel.text = @"No downloaded albums.";
+        self.statusLabel.hidden = self.albums.count > 0;
+        [self.collectionView reloadData];
+        self.loading = NO;
+        return;
+    }
     if (![NVSettings shared].isConfigured) { self.statusLabel.text = @"Set up your server:\nMore \u203A Settings"; self.statusLabel.hidden = NO; return; }
     self.loading = YES;
     if (!offset) { self.statusLabel.text = @"Loading\u2026"; self.statusLabel.hidden = NO; }

@@ -2,10 +2,11 @@
 #import "NVClient.h"
 #import "NVSettings.h"
 #import "NVTheme.h"
+#import "NVOffline.h"
 
-static NSDictionary *NVCleanSong(NSDictionary *s) {   // plist-safe subset (no NSNull)
+static NSDictionary *NVCleanSong(NSDictionary *s) {
     NSMutableDictionary *o = [NSMutableDictionary dictionary];
-    for (NSString *k in @[@"id", @"title", @"artist", @"album", @"albumId", @"artistId", @"coverArt",
+    for (NSString *k in @[@"id", @"title", @"artist", @"album", @"albumId", @"artistId", @"coverArt", @"genre",
                           @"suffix", @"duration", @"track", @"discNumber", @"year", @"size"]) {
         id v = s[k];
         if (v && v != [NSNull null]) o[k] = v;
@@ -23,13 +24,19 @@ static NSString *NVSafeName(NSString *s) {
     return o;
 }
 
-@interface NVDownloadManager () <NSURLConnectionDataDelegate>
-@property (nonatomic, strong) NSMutableDictionary *entries;    // id -> {song, file, bytes}
-@property (nonatomic, strong) NSMutableArray *queue;
+@interface NVDownloadTask : NSObject
+@property (nonatomic, strong) NSDictionary *song;
 @property (nonatomic, strong) NSURLConnection *connection;
 @property (nonatomic, strong) NSFileHandle *handle;
 @property (nonatomic) long long received, expected;
-@property (nonatomic) float currentProgress;
+@end
+@implementation NVDownloadTask
+@end
+
+@interface NVDownloadManager () <NSURLConnectionDataDelegate>
+@property (nonatomic, strong) NSMutableDictionary *entries;
+@property (nonatomic, strong) NSMutableArray *queue;
+@property (nonatomic, strong) NSMutableArray *active;
 @property (nonatomic, copy) NSString *lastError;
 @property (nonatomic) UIBackgroundTaskIdentifier bgTask;
 @property (nonatomic) NSTimeInterval lastNotify;
@@ -47,9 +54,9 @@ static NSString *NVSafeName(NSString *s) {
     self = [super init];
     if (self) {
         _queue = [NSMutableArray array];
+        _active = [NSMutableArray array];
         _bgTask = UIBackgroundTaskInvalid;
         _entries = [NSMutableDictionary dictionaryWithContentsOfFile:[self libraryPath]] ?: [NSMutableDictionary dictionary];
-        // drop entries whose files vanished, clean stale .part files
         NSFileManager *fm = [NSFileManager defaultManager];
         for (NSString *k in [_entries allKeys]) {
             if (![fm fileExistsAtPath:[self pathForFile:_entries[k][@"file"]]]) [_entries removeObjectForKey:k];
@@ -57,6 +64,7 @@ static NSString *NVSafeName(NSString *s) {
         for (NSString *f in [fm contentsOfDirectoryAtPath:NVMusicDirectory() error:nil]) {
             if ([f hasSuffix:@".part"]) [fm removeItemAtPath:[self pathForFile:f] error:nil];
         }
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(kick) name:NVOfflineChangedNotification object:nil];
     }
     return self;
 }
@@ -65,15 +73,29 @@ static NSString *NVSafeName(NSString *s) {
 - (NSString *)pathForFile:(NSString *)f { return [NVMusicDirectory() stringByAppendingPathComponent:f]; }
 - (void)save { [self.entries writeToFile:[self libraryPath] atomically:YES]; }
 
-- (NSArray *)pending { return [self.queue copy]; }
-
-#pragma mark Queries
-
-- (BOOL)isDownloaded:(NSString *)sid { return sid && self.entries[sid] != nil; }
+- (NSArray *)pending {
+    NSMutableArray *a = [NSMutableArray array];
+    for (NVDownloadTask *t in self.active) [a addObject:t.song];
+    [a addObjectsFromArray:self.queue];
+    return a;
+}
+- (NSInteger)activeCount { return self.active.count; }
+- (BOOL)isActive:(NSString *)sid {
+    for (NVDownloadTask *t in self.active) if ([t.song[@"id"] isEqual:sid]) return YES;
+    return NO;
+}
 - (BOOL)isPending:(NSString *)sid {
+    if ([self isActive:sid]) return YES;
     for (NSDictionary *s in self.queue) if ([s[@"id"] isEqual:sid]) return YES;
     return NO;
 }
+- (float)progressForSongID:(NSString *)sid {
+    for (NVDownloadTask *t in self.active) {
+        if ([t.song[@"id"] isEqual:sid]) return t.expected > 0 ? MIN(0.99f, (float)t.received / (float)t.expected) : 0;
+    }
+    return 0;
+}
+- (BOOL)isDownloaded:(NSString *)sid { return sid && self.entries[sid] != nil; }
 - (NSURL *)localURLForSongID:(NSString *)sid {
     NSDictionary *e = sid ? self.entries[sid] : nil;
     if (!e) return nil;
@@ -100,9 +122,12 @@ static NSString *NVSafeName(NSString *s) {
     return t;
 }
 
-#pragma mark Mutations
-
 - (void)enqueueSongs:(NSArray *)songs {
+    if ([NVOffline shared].isOffline) {
+        self.lastError = @"You\u2019re offline.";
+        [self notifyChanged];
+        return;
+    }
     for (NSDictionary *s in songs) {
         NSString *sid = s[@"id"];
         if (!sid || [self isDownloaded:sid] || [self isPending:sid]) continue;
@@ -110,7 +135,7 @@ static NSString *NVSafeName(NSString *s) {
     }
     self.lastError = nil;
     [self notifyChanged];
-    [self startNext];
+    [self kick];
 }
 
 - (void)deleteSongID:(NSString *)sid {
@@ -132,16 +157,16 @@ static NSString *NVSafeName(NSString *s) {
 }
 
 - (void)cancelPending {
-    [self.connection cancel]; self.connection = nil;
-    [self.handle closeFile]; self.handle = nil;
-    NSDictionary *cur = ([self.queue count] ? [self.queue objectAtIndex:0] : nil);
-    if (cur) [[NSFileManager defaultManager] removeItemAtPath:[self partPathForSong:cur] error:nil];
+    for (NVDownloadTask *t in [self.active copy]) {
+        [t.connection cancel]; t.connection = nil;
+        [t.handle closeFile]; t.handle = nil;
+        [[NSFileManager defaultManager] removeItemAtPath:[self partPathForSong:t.song] error:nil];
+    }
+    [self.active removeAllObjects];
     [self.queue removeAllObjects];
     [self endBackground];
     [self notifyChanged];
 }
-
-#pragma mark Download loop
 
 - (NSString *)partPathForSong:(NSDictionary *)s {
     return [self pathForFile:[NVSafeName(s[@"id"]) stringByAppendingString:@".part"]];
@@ -157,57 +182,74 @@ static NSString *NVSafeName(NSString *s) {
     self.bgTask = UIBackgroundTaskInvalid;
 }
 
-- (void)startNext {
-    if (self.connection) return;
-    if (self.queue.count == 0) { [self endBackground]; return; }
-    NSDictionary *song = self.queue[0];
+- (void)kick {
+    if (![NSThread isMainThread]) { dispatch_async(dispatch_get_main_queue(), ^{ [self kick]; }); return; }
+    if ([NVOffline shared].isOffline) return;
+    NSInteger limit = [NVSettings shared].maxConcurrentDownloads;
+    BOOL started = NO;
+    while ((NSInteger)self.active.count < limit && self.queue.count) {
+        NSDictionary *song = self.queue[0];
+        [self.queue removeObjectAtIndex:0];
+        [self startSong:song];
+        started = YES;
+    }
+    if (!self.active.count && !self.queue.count) [self endBackground];
+    if (started) [self notifyChanged];
+}
+
+- (void)startSong:(NSDictionary *)song {
     NSURL *url = [[NVClient shared] streamURLForSong:song];
     if (!url) {
         self.lastError = @"Server is not configured.";
         [self.queue removeAllObjects];
-        [self notifyChanged];
         return;
     }
     [self beginBackground];
     NSString *part = [self partPathForSong:song];
     [[NSFileManager defaultManager] createFileAtPath:part contents:nil attributes:nil];
-    self.handle = [NSFileHandle fileHandleForWritingAtPath:part];
-    self.received = 0; self.expected = 0; self.currentProgress = 0;
+    NVDownloadTask *t = [[NVDownloadTask alloc] init];
+    t.song = song;
+    t.handle = [NSFileHandle fileHandleForWritingAtPath:part];
     NSURLRequest *req = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:30];
-    self.connection = [[NSURLConnection alloc] initWithRequest:req delegate:self startImmediately:NO];
-    [self.connection scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];   // keep going while scrolling
-    [self.connection start];
-    [self notifyChanged];
+    t.connection = [[NSURLConnection alloc] initWithRequest:req delegate:self startImmediately:NO];
+    [t.connection scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+    [self.active addObject:t];
+    [t.connection start];
 }
 
-- (void)failCurrent:(NSString *)msg {
-    [self.connection cancel]; self.connection = nil;
-    [self.handle closeFile]; self.handle = nil;
-    NSDictionary *cur = ([self.queue count] ? [self.queue objectAtIndex:0] : nil);
-    if (cur) {
-        [[NSFileManager defaultManager] removeItemAtPath:[self partPathForSong:cur] error:nil];
-        [self.queue removeObjectAtIndex:0];
-    }
+- (NVDownloadTask *)taskForConnection:(NSURLConnection *)c {
+    for (NVDownloadTask *t in self.active) if (t.connection == c) return t;
+    return nil;
+}
+
+- (void)failTask:(NVDownloadTask *)t message:(NSString *)msg {
+    [t.connection cancel]; t.connection = nil;
+    [t.handle closeFile]; t.handle = nil;
+    [[NSFileManager defaultManager] removeItemAtPath:[self partPathForSong:t.song] error:nil];
+    [self.active removeObject:t];
     self.lastError = msg;
     [self notifyChanged];
-    [self startNext];
+    [self kick];
 }
 
 - (void)connection:(NSURLConnection *)c didReceiveResponse:(NSURLResponse *)r {
+    NVDownloadTask *t = [self taskForConnection:c];
+    if (!t) return;
     NSInteger code = [r isKindOfClass:[NSHTTPURLResponse class]] ? [(NSHTTPURLResponse *)r statusCode] : 200;
     NSString *mime = [[r MIMEType] lowercaseString] ?: @"";
     if (code >= 400 || [mime hasPrefix:@"text/"] || [mime rangeOfString:@"json"].location != NSNotFound
         || [mime rangeOfString:@"xml"].location != NSNotFound) {
-        [self failCurrent:@"Server refused the download."];
+        [self failTask:t message:@"Server refused the download."];
         return;
     }
-    self.expected = [r expectedContentLength];
+    t.expected = [r expectedContentLength];
 }
 
 - (void)connection:(NSURLConnection *)c didReceiveData:(NSData *)data {
-    [self.handle writeData:data];
-    self.received += data.length;
-    self.currentProgress = self.expected > 0 ? MIN(0.99f, (float)self.received / (float)self.expected) : 0;
+    NVDownloadTask *t = [self taskForConnection:c];
+    if (!t) return;
+    [t.handle writeData:data];
+    t.received += data.length;
     NSTimeInterval now = [NSDate timeIntervalSinceReferenceDate];
     if (now - self.lastNotify > 0.3) {
         self.lastNotify = now;
@@ -216,25 +258,27 @@ static NSString *NVSafeName(NSString *s) {
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)c {
-    [self.handle closeFile]; self.handle = nil;
-    self.connection = nil;
-    NSDictionary *song = ([self.queue count] ? [self.queue objectAtIndex:0] : nil);
-    if (!song || self.received == 0) { [self failCurrent:@"Empty response."]; return; }
+    NVDownloadTask *t = [self taskForConnection:c];
+    if (!t) return;
+    [t.handle closeFile]; t.handle = nil; t.connection = nil;
+    if (t.received == 0) { [self failTask:t message:@"Empty response."]; return; }
+    NSDictionary *song = t.song;
     NSString *file = [NSString stringWithFormat:@"%@.%@", NVSafeName(song[@"id"]), [[NVClient shared] fileExtensionForSong:song]];
     NSString *dst = [self pathForFile:file];
     NSFileManager *fm = [NSFileManager defaultManager];
     [fm removeItemAtPath:dst error:nil];
     [fm moveItemAtPath:[self partPathForSong:song] toPath:dst error:nil];
-    self.entries[song[@"id"]] = @{ @"song": song, @"file": file, @"bytes": @(self.received) };
+    self.entries[song[@"id"]] = @{ @"song": song, @"file": file, @"bytes": @(t.received) };
     [self save];
     [NVImageLoader saveOfflineCover:song[@"coverArt"]];
-    [self.queue removeObjectAtIndex:0];
+    [self.active removeObject:t];
     [self notifyChanged];
-    [self startNext];
+    [self kick];
 }
 
 - (void)connection:(NSURLConnection *)c didFailWithError:(NSError *)error {
-    [self failCurrent:error.localizedDescription];
+    NVDownloadTask *t = [self taskForConnection:c];
+    if (t) [self failTask:t message:error.localizedDescription];
 }
 
 - (void)notifyChanged {

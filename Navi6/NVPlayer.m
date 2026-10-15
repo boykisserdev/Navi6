@@ -2,6 +2,7 @@
 #import "NVClient.h"
 #import "NVDownloadManager.h"
 #import "NVTheme.h"
+#import "NVLog.h"
 #import <AVFoundation/AVFoundation.h>
 #import <MediaPlayer/MediaPlayer.h>
 
@@ -36,8 +37,6 @@
     return self;
 }
 
-#pragma mark State
-
 - (NSDictionary *)currentSong {
     return (self.index >= 0 && self.index < (NSInteger)self.queue.count) ? self.queue[self.index] : nil;
 }
@@ -57,8 +56,6 @@
 
 - (void)post { [[NSNotificationCenter defaultCenter] postNotificationName:NVPlayerChangedNotification object:nil]; }
 
-#pragma mark Playback
-
 - (void)playSongs:(NSArray *)songs startIndex:(NSInteger)i { [self playSongs:songs startIndex:i shuffled:NO]; }
 
 - (void)playSongs:(NSArray *)songs startIndex:(NSInteger)i shuffled:(BOOL)shuffled {
@@ -67,7 +64,7 @@
     self.queue = self.originalQueue;
     _shuffle = NO;
     self.index = shuffled ? (NSInteger)arc4random_uniform((u_int32_t)songs.count) : MAX(0, MIN(i, (NSInteger)songs.count - 1));
-    if (shuffled) self.shuffle = YES;      // moves the chosen song to the front, shuffles the rest
+    if (shuffled) self.shuffle = YES;
     self.failCount = 0;
     [self startIndex:self.index];
 }
@@ -76,6 +73,7 @@
     if (i < 0 || i >= (NSInteger)self.queue.count) return;
     self.index = i;
     NSDictionary *song = self.queue[i];
+    NVLog(@"play %@", song[@"id"]);
     NSURL *url = [[NVDownloadManager shared] localURLForSongID:song[@"id"]] ?: [[NVClient shared] streamURLForSong:song];
     if (!url) { [self pause]; return; }
 
@@ -114,6 +112,7 @@
 }
 
 - (void)itemDidEnd:(NSNotification *)n {
+    if (![NSThread isMainThread]) { dispatch_async(dispatch_get_main_queue(), ^{ [self itemDidEnd:n]; }); return; }
     if (n.object != self.observedItem) return;
     [[NVClient shared] scrobbleSongID:self.currentSong[@"id"] submission:YES];
     [self advance:YES];
@@ -153,8 +152,6 @@
     [self.player seekToTime:CMTimeMakeWithSeconds(MAX(t, 0), 600)];
     [self publishNowPlaying];
 }
-
-#pragma mark Queue
 
 - (void)setShuffle:(BOOL)on {
     if (_shuffle == on) return;
@@ -196,6 +193,20 @@
 
 - (void)jumpToIndex:(NSInteger)i { [self startIndex:i]; }
 
+- (void)moveQueueIndex:(NSInteger)from toIndex:(NSInteger)to {
+    NSInteger n = (NSInteger)self.queue.count;
+    if (from < 0 || from >= n || to < 0 || to >= n || from == to) return;
+    NSMutableArray *q = [self.queue mutableCopy];
+    NSDictionary *song = q[from];
+    [q removeObjectAtIndex:from];
+    [q insertObject:song atIndex:to];
+    if (!self.shuffle) self.originalQueue = q;
+    self.queue = q;
+    if (self.index == from) self.index = to;
+    else if (from < self.index && to >= self.index) self.index--;
+    else if (from > self.index && to <= self.index) self.index++;
+}
+
 - (void)removeQueueIndex:(NSInteger)i {
     if (i < 0 || i >= (NSInteger)self.queue.count) return;
     NSDictionary *song = self.queue[i];
@@ -219,8 +230,6 @@
     }
     [self post];
 }
-
-#pragma mark System integration
 
 - (void)publishNowPlaying {
     NSDictionary *song = self.currentSong;
@@ -262,6 +271,7 @@
 }
 
 - (void)interruption:(NSNotification *)n {
+    if (![NSThread isMainThread]) { dispatch_async(dispatch_get_main_queue(), ^{ [self interruption:n]; }); return; }
     NSUInteger type = [n.userInfo[AVAudioSessionInterruptionTypeKey] unsignedIntegerValue];
     if (type == AVAudioSessionInterruptionTypeBegan) {
         self.resumeAfterInterruption = self.playing;
@@ -273,7 +283,7 @@
     }
 }
 
-- (void)routeChanged:(NSNotification *)n {   // headphones unplugged -> pause, like the stock Music app
+- (void)routeChanged:(NSNotification *)n {
     NSUInteger reason = [n.userInfo[AVAudioSessionRouteChangeReasonKey] unsignedIntegerValue];
     if (reason == AVAudioSessionRouteChangeReasonOldDeviceUnavailable && self.playing) {
         dispatch_async(dispatch_get_main_queue(), ^{ [self pause]; });

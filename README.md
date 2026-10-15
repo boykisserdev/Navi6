@@ -1,7 +1,13 @@
-# Navi6 — Navidrome client for iOS 6
+# Navi6
 
-- Customazible tabs
+- Customizable tabs
 - Offline mode
 - Beautiful interface
+- Karaoke lyrics word-by-word
+- Queue
+- UwU
 
-Ill add iPad support later someday
+A native **Navidrome / Subsonic** client for **iOS 6**, written in Objective-C with a skeuomorphic interface.
+
+## Requirements
+- iOS 6.0 or newer (iPhone; iPad is experimental), a Navidrome (or other Subsonic API 1.16) server.

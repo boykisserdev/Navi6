@@ -6,6 +6,8 @@
 #import "NVPlayer.h"
 #import "NVTheme.h"
 #import "NVDownloadManager.h"
+#import "NVOffline.h"
+#import "NVLocalLibrary.h"
 
 @implementation NVFavoritesViewController {
     UISegmentedControl *_seg;
@@ -36,6 +38,8 @@
     [nc addObserver:self selector:@selector(changed) name:NVFavoritesChangedNotification object:nil];
     [nc addObserver:self selector:@selector(changed) name:NVPlayerChangedNotification object:nil];
     [nc addObserver:self selector:@selector(changed) name:NVDownloadsChangedNotification object:nil];
+    [nc addObserver:self selector:@selector(offlineChanged) name:NVOfflineChangedNotification object:nil];
+    self.navigationItem.rightBarButtonItem = [NVOffline shared].isOffline ? [[NVOffline shared] cloudItem] : nil;
     [[NVFavorites shared] refresh];
     [self.tableView reloadData];
 }
@@ -47,12 +51,26 @@
 
 - (void)changed { [self.refreshControl endRefreshing]; [self.tableView reloadData]; }
 - (void)segChanged { [self.tableView reloadData]; }
+- (void)offlineChanged {
+    self.navigationItem.rightBarButtonItem = [NVOffline shared].isOffline ? [[NVOffline shared] cloudItem] : nil;
+    [[NVFavorites shared] refresh];
+    [self.tableView reloadData];
+}
 
 - (NSArray *)items {
     NVFavorites *f = [NVFavorites shared];
-    switch (_seg.selectedSegmentIndex) { case 0: return f.songs; case 1: return f.albums; default: return f.artists; }
+    NSArray *all;
+    switch (_seg.selectedSegmentIndex) { case 0: all = f.songs; break; case 1: all = f.albums; break; default: all = f.artists; break; }
+    if (![NVOffline shared].isOffline) return all;
+    NSSet *keys = _seg.selectedSegmentIndex == 1 ? [NVLocalLibrary albumKeys] : [NVLocalLibrary artistKeys];
+    NSMutableArray *out = [NSMutableArray array];
+    for (NSDictionary *d in all) {
+        BOOL keep = _seg.selectedSegmentIndex == 0 ? [[NVDownloadManager shared] isDownloaded:d[@"id"]] : [keys containsObject:d[@"id"]];
+        if (keep) [out addObject:d];
+    }
+    return out;
 }
-- (NSInteger)off { return (_seg.selectedSegmentIndex == 0 && [self items].count) ? 1 : 0; }   // "Shuffle" row
+- (NSInteger)off { return (_seg.selectedSegmentIndex == 0 && [self items].count) ? 1 : 0; }
 
 - (NSInteger)tableView:(UITableView *)tv numberOfRowsInSection:(NSInteger)s {
     NSUInteger n = [self items].count;
@@ -97,13 +115,19 @@
 }
 
 - (BOOL)tableView:(UITableView *)tv canEditRowAtIndexPath:(NSIndexPath *)ip {
-    return _seg.selectedSegmentIndex == 0 && [self items].count > 0 && ip.row >= 1;
+    if (![self items].count) return NO;
+    return _seg.selectedSegmentIndex == 0 ? ip.row >= 1 : YES;
 }
 
 - (NSString *)tableView:(UITableView *)tv titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)ip { return @"Unfavorite"; }
 
 - (void)tableView:(UITableView *)tv commitEditingStyle:(UITableViewCellEditingStyle)st forRowAtIndexPath:(NSIndexPath *)ip {
-    if (st == UITableViewCellEditingStyleDelete) [[NVFavorites shared] toggleSong:[self items][ip.row - 1]];
+    if (st != UITableViewCellEditingStyleDelete) return;
+    switch (_seg.selectedSegmentIndex) {
+        case 0:  [[NVFavorites shared] toggleSong:[self items][ip.row - 1]]; break;
+        case 1:  [[NVFavorites shared] toggleAlbum:[self items][ip.row]]; break;
+        default: [[NVFavorites shared] toggleArtist:[self items][ip.row]]; break;
+    }
 }
 
 @end

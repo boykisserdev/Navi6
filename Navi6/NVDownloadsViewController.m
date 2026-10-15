@@ -39,13 +39,18 @@
 
 - (void)progress {
     if (![self hasPending]) return;
-    UITableViewCell *c = [self.tableView cellForRowAtIndexPath:[NSIndexPath indexPathForRow:0 inSection:0]];
-    ((UIProgressView *)[c viewWithTag:101]).progress = [NVDownloadManager shared].currentProgress;
+    NVDownloadManager *dm = [NVDownloadManager shared];
+    NSArray *pending = dm.pending;
+    for (NSIndexPath *ip in [self.tableView indexPathsForVisibleRows]) {
+        if (![self isPendingSection:ip.section] || ip.row >= (NSInteger)pending.count) continue;
+        UITableViewCell *c = [self.tableView cellForRowAtIndexPath:ip];
+        ((UIProgressView *)[c viewWithTag:101]).progress = [dm progressForSongID:pending[ip.row][@"id"]];
+    }
 }
 
 - (BOOL)hasPending { return [NVDownloadManager shared].pending.count > 0; }
 - (BOOL)isPendingSection:(NSInteger)s { return [self hasPending] && s == 0; }
-- (NSInteger)off { return _songs.count ? 1 : 0; }      // "Shuffle" row at top of the songs section
+- (NSInteger)off { return _songs.count ? 1 : 0; }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tv { return [self hasPending] ? 2 : 1; }
 
@@ -84,12 +89,14 @@
             pv.autoresizingMask = UIViewAutoresizingFlexibleWidth;
             [cell.contentView addSubview:pv];
         }
-        NSDictionary *s = [NVDownloadManager shared].pending[ip.row];
+        NVDownloadManager *dm = [NVDownloadManager shared];
+        NSDictionary *s = dm.pending[ip.row];
+        BOOL active = [dm isActive:s[@"id"]];
         cell.textLabel.text = s[@"title"];
-        cell.detailTextLabel.text = ip.row == 0 ? s[@"artist"] : [NSString stringWithFormat:@"%@ \u00B7 waiting", s[@"artist"] ?: @""];
+        cell.detailTextLabel.text = active ? s[@"artist"] : [NSString stringWithFormat:@"%@ \u00B7 waiting", s[@"artist"] ?: @""];
         UIProgressView *pv = (UIProgressView *)[cell viewWithTag:101];
-        pv.hidden = ip.row != 0;
-        pv.progress = ip.row == 0 ? [NVDownloadManager shared].currentProgress : 0;
+        pv.hidden = !active;
+        pv.progress = active ? [dm progressForSongID:s[@"id"]] : 0;
         return cell;
     }
     if (!_songs.count) return [NVCells messageCellForTableView:tv text:@"No downloaded music yet.\nOpen an album and tap Download."];

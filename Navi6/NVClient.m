@@ -1,5 +1,7 @@
 #import "NVClient.h"
 #import "NVSettings.h"
+#import "NVOffline.h"
+#import "NVLog.h"
 #import <CommonCrypto/CommonDigest.h>
 
 NSArray *NVArray(id obj) {
@@ -10,17 +12,43 @@ NSArray *NVArray(id obj) {
 
 static NSString *NVMD5(NSString *s) {
     const char *p = [s UTF8String];
+    if (!p) p = "";
     unsigned char d[CC_MD5_DIGEST_LENGTH];
     CC_MD5(p, (CC_LONG)strlen(p), d);
-    NSMutableString *o = [NSMutableString stringWithCapacity:32];
-    for (int i = 0; i < CC_MD5_DIGEST_LENGTH; i++) [o appendFormat:@"%02x", d[i]];
-    return o;
+    char hex[2 * CC_MD5_DIGEST_LENGTH + 1];
+    for (int i = 0; i < CC_MD5_DIGEST_LENGTH; i++) snprintf(hex + i * 2, 3, "%02x", d[i]);
+    return [NSString stringWithUTF8String:hex];
 }
 
 static NSString *NVEscape(NSString *s) {
-    return (__bridge_transfer NSString *)CFURLCreateStringByAddingPercentEscapes(
-        NULL, (__bridge CFStringRef)s, NULL, CFSTR("!*'();:@&=+$,/?%#[]"), kCFStringEncodingUTF8);
+    const char *u = [(s ?: @"") UTF8String];
+    if (!u) return @"";
+    size_t n = strlen(u), j = 0;
+    char *out = (char *)malloc(n * 3 + 1);
+    if (!out) return @"";
+    static const char *hexd = "0123456789ABCDEF";
+    for (size_t i = 0; i < n; i++) {
+        unsigned char c = (unsigned char)u[i];
+        if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '-' || c == '_' || c == '.' || c == '~') {
+            out[j++] = (char)c;
+        } else {
+            out[j++] = '%'; out[j++] = hexd[c >> 4]; out[j++] = hexd[c & 15];
+        }
+    }
+    out[j] = 0;
+    NSString *r = [NSString stringWithUTF8String:out];
+    free(out);
+    return r ?: @"";
 }
+
+static void NVAppendParam(NSMutableString *q, NSString *key, id value) {
+    if (q.length) [q appendString:@"&"];
+    [q appendString:NVEscape(key)];
+    [q appendString:@"="];
+    [q appendString:NVEscape([value description])];
+}
+
+NSString *NVURLEscape(NSString *s) { return NVEscape(s); }
 
 static NSError *NVError(NSString *msg) {
     return [NSError errorWithDomain:@"Navi6" code:1 userInfo:@{ NSLocalizedDescriptionKey: msg }];
@@ -45,22 +73,42 @@ static NSError *NVError(NSString *msg) {
 - (NSURL *)URLForEndpoint:(NSString *)name params:(NSDictionary *)params {
     NVSettings *st = [NVSettings shared];
     NSString *base = [self baseURLString];
-    if (!base || !st.username.length) return nil;
-    NSString *salt = [NSString stringWithFormat:@"%08x%08x", arc4random(), arc4random()];
-    NSMutableDictionary *all = [NSMutableDictionary dictionaryWithDictionary:@{
-        @"u": st.username, @"t": NVMD5([st.password stringByAppendingString:salt]), @"s": salt,
-        @"v": @"1.16.1", @"c": @"Navi6", @"f": @"json" }];
-    [all addEntriesFromDictionary:params];
-    NSMutableArray *parts = [NSMutableArray array];
-    for (NSString *k in all) {
-        [parts addObject:[NSString stringWithFormat:@"%@=%@", NVEscape(k), NVEscape([all[k] description])]];
+    NSString *user = st.username;
+    NSString *pass = st.password;
+    if (!base || !user.length) return nil;
+    NVLog(@"url: base ok");
+    NSString *salt = [NSString stringWithFormat:@"%08x%08x", (unsigned int)arc4random(), (unsigned int)arc4random()];
+    NSString *token = NVMD5([(pass ?: @"") stringByAppendingString:salt]);
+    NVLog(@"url: token ok");
+    NSMutableString *q = [NSMutableString string];
+    NVAppendParam(q, @"u", user);
+    NVAppendParam(q, @"t", token);
+    NVAppendParam(q, @"s", salt);
+    NVAppendParam(q, @"v", @"1.16.1");
+    NVAppendParam(q, @"c", @"Navi6");
+    NVAppendParam(q, @"f", @"json");
+    for (NSString *k in params) {
+        id v = [params objectForKey:k];
+        if ([v isKindOfClass:[NSArray class]]) { for (id x in v) NVAppendParam(q, k, x); }
+        else NVAppendParam(q, k, v);
     }
-    NSString *s = [NSString stringWithFormat:@"%@/rest/%@.view?%@", base, name, [parts componentsJoinedByString:@"&"]];
+    NVLog(@"url: query ok");
+    NSString *s = [NSString stringWithFormat:@"%@/rest/%@.view?%@", base, name, q];
     return [NSURL URLWithString:s];
 }
 
 - (void)request:(NSString *)endpoint params:(NSDictionary *)params
      completion:(void (^)(NSDictionary *, NSError *))completion {
+    [self performRequest:endpoint params:params bypass:NO completion:completion];
+}
+
+- (void)performRequest:(NSString *)endpoint params:(NSDictionary *)params bypass:(BOOL)bypass
+            completion:(void (^)(NSDictionary *, NSError *))completion {
+    if (!bypass && [NVOffline shared].isOffline) {
+        dispatch_async(dispatch_get_main_queue(), ^{ completion(nil, NVError(@"You\u2019re offline.")); });
+        return;
+    }
+    NVLog(@"req %@", endpoint);
     NSURL *url = [self URLForEndpoint:endpoint params:params];
     if (!url) {
         dispatch_async(dispatch_get_main_queue(), ^{ completion(nil, NVError(@"Server is not configured.")); });
@@ -84,15 +132,15 @@ static NSError *NVError(NSString *msg) {
                 root = sr;
             }
         }
+        NVLog(@"res %@ %@", endpoint, outErr ? outErr.localizedDescription : @"ok");
         dispatch_async(dispatch_get_main_queue(), ^{ completion(root, outErr); });
     }];
 }
 
 - (void)ping:(void (^)(NSError *))completion {
-    [self request:@"ping" params:@{} completion:^(NSDictionary *r, NSError *e) { completion(e); }];
+    [self performRequest:@"ping" params:@{} bypass:YES completion:^(NSDictionary *r, NSError *e) { completion(e); }];
 }
 
-// iOS 6 AVPlayer plays these natively. Everything else (flac/ogg/opus/wma...) is transcoded to mp3 by the server.
 - (BOOL)isNative:(NSString *)suffix {
     return [@[@"mp3", @"m4a", @"aac", @"alac", @"wav", @"aif", @"aiff", @"mp4", @"m4b"] containsObject:[suffix lowercaseString] ?: @""];
 }
@@ -122,9 +170,6 @@ static NSError *NVError(NSString *msg) {
 }
 
 @end
-
-
-#pragma mark - Images
 
 @implementation NVImageLoader
 
@@ -175,7 +220,7 @@ static NSCache *sCache; static NSOperationQueue *sQueue; static NSString *sDiskD
             }
         }
         UIImage *out = nil;
-        if (raw) {   // decode off the main thread so scrolling stays smooth
+        if (raw) {
             UIGraphicsBeginImageContextWithOptions(CGSizeMake(pt, pt), YES, 0);
             [raw drawInRect:CGRectMake(0, 0, pt, pt)];
             out = UIGraphicsGetImageFromCurrentImageContext();
@@ -185,6 +230,27 @@ static NSCache *sCache; static NSOperationQueue *sQueue; static NSString *sDiskD
         dispatch_async(dispatch_get_main_queue(), ^{ completion(out); });
     }];
 }
+
++ (void)loadFullCover:(NSString *)cid maxPixels:(int)px completion:(void (^)(UIImage *))completion {
+    if (!cid.length) { completion(nil); return; }
+    [sQueue addOperationWithBlock:^{
+        NSString *disk = [sDiskDir stringByAppendingPathComponent:[NSString stringWithFormat:@"full_%@_%d.jpg", [self safe:cid], px]];
+        UIImage *img = [UIImage imageWithContentsOfFile:disk];
+        if (!img && ![NVOffline shared].isOffline) {
+            NSURL *url = [[NVClient shared] URLForEndpoint:@"getCoverArt" params:@{ @"id": cid, @"size": @(px) }];
+            if (url) {
+                NSData *d = [NSURLConnection sendSynchronousRequest:[NSURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:20]
+                                                  returningResponse:NULL error:NULL];
+                img = d.length ? [UIImage imageWithData:d] : nil;
+                if (img) [d writeToFile:disk atomically:YES];
+            }
+        }
+        if (!img) img = [UIImage imageWithContentsOfFile:[self offlinePath:cid]];
+        dispatch_async(dispatch_get_main_queue(), ^{ completion(img); });
+    }];
+}
+
++ (void)clearMemoryCache { [sCache removeAllObjects]; }
 
 + (void)saveOfflineCover:(NSString *)cid {
     if (!cid.length) return;

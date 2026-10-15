@@ -1,8 +1,8 @@
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
 
-// JSON from Subsonic may give a dict instead of a 1-element array
 NSArray *NVArray(id obj);
+NSString *NVURLEscape(NSString *s);
 
 @interface NVClient : NSObject
 + (instancetype)shared;
@@ -16,7 +16,10 @@ NSArray *NVArray(id obj);
 @end
 
 @interface NVImageLoader : NSObject
-// completion always runs on the main queue (synchronously if the image is in memory)
+
 + (void)loadCover:(NSString *)coverID size:(CGFloat)points completion:(void (^)(UIImage *image))completion;
 + (void)saveOfflineCover:(NSString *)coverID;
++ (void)clearMemoryCache;
+
++ (void)loadFullCover:(NSString *)coverID maxPixels:(int)px completion:(void (^)(UIImage *image))completion;
 @end

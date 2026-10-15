@@ -7,8 +7,14 @@ NSString * const NVPlayerChangedNotification    = @"NVPlayerChanged";
 NSString * const NVDownloadsChangedNotification = @"NVDownloadsChanged";
 NSString * const NVDownloadProgressNotification = @"NVDownloadProgress";
 NSString * const NVFavoritesChangedNotification = @"NVFavoritesChanged";
+NSString * const NVPlaylistsChangedNotification = @"NVPlaylistsChanged";
 
-// NOTE: only pass colors made with colorWithRed:... (getRed: fails on grayscale colors in iOS 6)
+UIViewController *NVTopViewController(void) {
+    UIViewController *r = [UIApplication sharedApplication].keyWindow.rootViewController;
+    while (r.presentedViewController) r = r.presentedViewController;
+    return r;
+}
+
 static void NVFillGradient(CGContextRef c, CGRect r, UIColor *top, UIColor *bot) {
     CGFloat t[4], b[4];
     [top getRed:&t[0] green:&t[1] blue:&t[2] alpha:&t[3]];
@@ -44,7 +50,6 @@ static UIBezierPath *NVStarPath(CGFloat cx, CGFloat cy, CGFloat R, CGFloat r) {
     [[UIToolbar appearance] setTintColor:graphite];
 }
 
-// Procedurally generated linen texture (no image assets needed)
 + (UIColor *)linenColor {
     static UIColor *color; static dispatch_once_t once;
     dispatch_once(&once, ^{
@@ -87,7 +92,6 @@ static UIBezierPath *NVStarPath(CGFloat cx, CGFloat cy, CGFloat R, CGFloat r) {
 
 + (UIColor *)barTint { return RGBA(0.20, 0.23, 0.29, 1); }
 
-// 30x30 template icons (alpha masks, like the stock tab bar art): UIKit tints them gray / blue.
 + (UIImage *)tabIconNamed:(NSString *)name {
     UIGraphicsBeginImageContextWithOptions(CGSizeMake(30, 30), NO, 0);
     CGContextRef c = UIGraphicsGetCurrentContext();
@@ -97,7 +101,12 @@ static UIBezierPath *NVStarPath(CGFloat cx, CGFloat cy, CGFloat R, CGFloat r) {
     [[UIColor blackColor] setStroke];
     CGContextSetLineWidth(c, 2.2);
 
-    if ([name isEqualToString:@"songs"]) {
+    if ([name isEqualToString:@"genres"]) {
+        for (int i = 0; i < 4; i++) {
+            CGRect r = CGRectMake(4 + (i % 2) * 12.5, 4 + (i / 2) * 12.5, 9.5, 9.5);
+            [[UIBezierPath bezierPathWithRoundedRect:r cornerRadius:2.6] fill];
+        }
+    } else if ([name isEqualToString:@"songs"]) {
         CGContextFillEllipseInRect(c, CGRectMake(6, 18.5, 11, 8));
         CGContextFillRect(c, CGRectMake(14.6, 5, 2.4, 17.5));
         UIBezierPath *flag = [UIBezierPath bezierPath];
@@ -135,7 +144,7 @@ static UIBezierPath *NVStarPath(CGFloat cx, CGFloat cy, CGFloat R, CGFloat r) {
         UIBezierPath *tri = [UIBezierPath bezierPath];
         [tri moveToPoint:CGPointMake(8.8, 13)]; [tri addLineToPoint:CGPointMake(21.2, 13)]; [tri addLineToPoint:CGPointMake(15, 20)]; [tri closePath];
         [tri fill];
-    } else {   // settings: gear
+    } else {
         CGContextFillEllipseInRect(c, CGRectMake(6.5, 6.5, 17, 17));
         for (int i = 0; i < 8; i++) {
             CGContextSaveGState(c);
@@ -186,6 +195,48 @@ static UIBezierPath *NVStarPath(CGFloat cx, CGFloat cy, CGFloat R, CGFloat r) {
     return img;
 }
 
++ (UIImage *)volumeIconMax:(BOOL)max {
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(22, 16), NO, 0);
+    CGContextRef c = UIGraphicsGetCurrentContext();
+    CGContextSetShadowWithColor(c, CGSizeMake(0, 1), 0, RGBA(0, 0, 0, .7).CGColor);
+    UIColor *col = RGBA(.78, .80, .84, 1);
+    [col setFill]; [col setStroke];
+    UIBezierPath *sp = [UIBezierPath bezierPath];
+    [sp moveToPoint:CGPointMake(2, 6)]; [sp addLineToPoint:CGPointMake(5, 6)]; [sp addLineToPoint:CGPointMake(9.5, 2)];
+    [sp addLineToPoint:CGPointMake(9.5, 14)]; [sp addLineToPoint:CGPointMake(5, 10)]; [sp addLineToPoint:CGPointMake(2, 10)];
+    [sp closePath]; [sp fill];
+    for (int i = 0; i < (max ? 3 : 0); i++) {
+        UIBezierPath *w = [UIBezierPath bezierPathWithArcCenter:CGPointMake(10, 8) radius:3.4 + i * 2.8 startAngle:-0.95 endAngle:0.95 clockwise:YES];
+        w.lineWidth = 1.4; w.lineCapStyle = kCGLineCapRound; [w stroke];
+    }
+    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return img;
+}
+
++ (UIImage *)cloudOfflineIcon {
+    UIGraphicsBeginImageContextWithOptions(CGSizeMake(28, 20), NO, 0);
+    CGContextRef c = UIGraphicsGetCurrentContext();
+    CGContextSetShadowWithColor(c, CGSizeMake(0, 1), 0, RGBA(0, 0, 0, .55).CGColor);
+    [[UIColor whiteColor] setFill];
+    UIBezierPath *cloud = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(3, 9, 22, 8) cornerRadius:4];
+    [cloud appendPath:[UIBezierPath bezierPathWithOvalInRect:CGRectMake(6, 5, 9, 9)]];
+    [cloud appendPath:[UIBezierPath bezierPathWithOvalInRect:CGRectMake(11, 2, 11, 11)]];
+    [cloud fill];
+    CGContextSetShadowWithColor(c, CGSizeZero, 0, NULL);
+    CGContextSetLineCap(c, kCGLineCapRound);
+    CGContextSetBlendMode(c, kCGBlendModeClear);
+    CGContextSetLineWidth(c, 5);
+    CGContextMoveToPoint(c, 4, 18.5); CGContextAddLineToPoint(c, 24, 1.5); CGContextStrokePath(c);
+    CGContextSetBlendMode(c, kCGBlendModeNormal);
+    [[UIColor whiteColor] setStroke];
+    CGContextSetLineWidth(c, 2);
+    CGContextMoveToPoint(c, 4, 18.5); CGContextAddLineToPoint(c, 24, 1.5); CGContextStrokePath(c);
+    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return img;
+}
+
 + (UIImage *)speakerIcon {
     static UIImage *img; static dispatch_once_t once;
     dispatch_once(&once, ^{
@@ -216,8 +267,6 @@ static UIBezierPath *NVStarPath(CGFloat cx, CGFloat cy, CGFloat R, CGFloat r) {
     return img;
 }
 
-// Nav-bar button icon. iOS 6 draws bar-item images as-is on some bar styles, so it is white (with the usual
-// 1px dark drop shadow) instead of a black template that vanishes on the black translucent bar.
 + (UIImage *)listIcon {
     UIGraphicsBeginImageContextWithOptions(CGSizeMake(22, 19), NO, 0);
     CGContextRef c = UIGraphicsGetCurrentContext();
@@ -246,9 +295,6 @@ static UIBezierPath *NVStarPath(CGFloat cx, CGFloat cy, CGFloat R, CGFloat r) {
 }
 
 @end
-
-
-#pragma mark - Glossy button
 
 @implementation NVGlossyButton
 
@@ -280,7 +326,7 @@ static UIBezierPath *NVStarPath(CGFloat cx, CGFloat cy, CGFloat R, CGFloat r) {
         default:
             top = RGBA(.62, .65, .70, 1); bot = RGBA(.22, .25, .31, 1); edge = RGBA(.10, .12, .16, 1); break;
     }
-    [RGBA(1, 1, 1, .55) setFill];   // bottom bevel highlight
+    [RGBA(1, 1, 1, .55) setFill];
     [[UIBezierPath bezierPathWithRoundedRect:CGRectOffset(r, 0, 1) cornerRadius:rad] fill];
     UIBezierPath *body = [UIBezierPath bezierPathWithRoundedRect:r cornerRadius:rad];
     CGContextSaveGState(c);
@@ -295,9 +341,6 @@ static UIBezierPath *NVStarPath(CGFloat cx, CGFloat cy, CGFloat R, CGFloat r) {
 }
 
 @end
-
-
-#pragma mark - Transport button
 
 @implementation NVTransportButton
 
@@ -338,7 +381,7 @@ static void NVTri(UIBezierPath *p, CGFloat x0, CGFloat y0, CGFloat x1, CGFloat y
                 }
             }
         }
-        // 1) dark drop shadow  2) silver gradient clipped to the glyph
+
         CGContextSaveGState(c);
         CGContextSetShadowWithColor(c, CGSizeMake(0, 2), 2, RGBA(0, 0, 0, .9).CGColor);
         [RGBA(0, 0, 0, 1) setFill];
@@ -363,6 +406,14 @@ static void NVTri(UIBezierPath *p, CGFloat x0, CGFloat y0, CGFloat x1, CGFloat y
         st.lineWidth = 2.2; st.lineJoinStyle = kCGLineJoinRound;
         if (self.active) { [RGBA(1, .82, .20, 1) setFill]; [st fill]; [RGBA(.75, .50, 0, 1) setStroke]; [st stroke]; }
         else             { [st stroke]; }
+    } else if (self.glyph == NVGlyphLyrics) {
+        UIBezierPath *bub = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(cx - 1.1*s, cy - .9*s, 2.2*s, 1.6*s) cornerRadius:.4*s];
+        bub.lineWidth = 2.0; [bub stroke];
+        UIBezierPath *tail = [UIBezierPath bezierPath];
+        [tail moveToPoint:CGPointMake(cx - .5*s, cy + .65*s)]; [tail addLineToPoint:CGPointMake(cx - .75*s, cy + 1.3*s)];
+        [tail addLineToPoint:CGPointMake(cx - .05*s, cy + .65*s)]; [tail closePath]; [tail fill];
+        for (int i = 0; i < 3; i++)
+            CGContextFillRect(c, CGRectMake(cx - .65*s, cy - .5*s + i * .42*s, 1.3*s - (i == 2 ? .55*s : 0), .17*s));
     } else if (self.glyph == NVGlyphQueue) {
         for (int i = -1; i <= 1; i++) {
             CGFloat y = cy + i * .75*s;
@@ -394,9 +445,6 @@ static void NVTri(UIBezierPath *p, CGFloat x0, CGFloat y0, CGFloat x1, CGFloat y
 
 @end
 
-
-#pragma mark - Glass panel / header
-
 @implementation NVGlassView
 - (id)initWithFrame:(CGRect)f {
     self = [super initWithFrame:f];
@@ -422,5 +470,40 @@ static void NVTri(UIBezierPath *p, CGFloat x0, CGFloat y0, CGFloat x1, CGFloat y
     NVFillGradient(c, b, RGBA(.97, .97, .98, 1), RGBA(.80, .81, .84, 1));
     [RGBA(.55, .56, .60, 1) setFill];
     UIRectFill(CGRectMake(0, b.size.height - 1, b.size.width, 1));
+}
+@end
+
+@implementation NVHeaderIconButton
+
++ (instancetype)buttonWithIcon:(NVHeaderIcon)icon {
+    NVHeaderIconButton *b = [NVHeaderIconButton buttonWithType:UIButtonTypeCustom];
+    b.icon = icon;
+    b.backgroundColor = [UIColor clearColor];
+    b.opaque = NO;
+    return b;
+}
+- (void)setOn:(BOOL)on { if (_on == on) return; _on = on; [self setNeedsDisplay]; }
+- (void)setHighlighted:(BOOL)h { [super setHighlighted:h]; [self setNeedsDisplay]; }
+
+- (void)drawRect:(CGRect)rect {
+    CGContextRef c = UIGraphicsGetCurrentContext();
+    CGFloat cx = CGRectGetMidX(self.bounds), cy = CGRectGetMidY(self.bounds), s = MIN(self.bounds.size.width, self.bounds.size.height) * .30f;
+    UIColor *col = self.highlighted ? RGBA(.10, .35, .80, 1) : RGBA(.42, .46, .55, 1);
+    CGContextSetShadowWithColor(c, CGSizeMake(0, 1), 0, RGBA(1, 1, 1, .9).CGColor);
+    CGContextSetLineCap(c, kCGLineCapRound); CGContextSetLineJoin(c, kCGLineJoinRound);
+    [col setStroke]; [col setFill];
+    if (self.icon == NVHeaderIconStar) {
+        UIBezierPath *st = NVStarPath(cx, cy + .06*s, 1.45*s, .62*s);
+        st.lineWidth = 1.8; st.lineJoinStyle = kCGLineJoinRound;
+        if (self.on) { [RGBA(1, .80, .15, 1) setFill]; [st fill]; [RGBA(.72, .46, 0, 1) setStroke]; [st stroke]; }
+        else [st stroke];
+    } else {
+        CGContextSetLineWidth(c, 2);
+        CGContextMoveToPoint(c, cx - s, cy - .1*s); CGContextAddLineToPoint(c, cx - s, cy + s);
+        CGContextAddLineToPoint(c, cx + s, cy + s); CGContextAddLineToPoint(c, cx + s, cy - .1*s); CGContextStrokePath(c);
+        CGContextMoveToPoint(c, cx, cy + .5*s); CGContextAddLineToPoint(c, cx, cy - 1.2*s); CGContextStrokePath(c);
+        CGContextMoveToPoint(c, cx - .6*s, cy - .55*s); CGContextAddLineToPoint(c, cx, cy - 1.2*s);
+        CGContextAddLineToPoint(c, cx + .6*s, cy - .55*s); CGContextStrokePath(c);
+    }
 }
 @end

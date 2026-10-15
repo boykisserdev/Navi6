@@ -4,10 +4,12 @@
 #import "NVCells.h"
 #import "NVClient.h"
 #import "NVPlayer.h"
+#import "NVOffline.h"
+#import "NVLocalLibrary.h"
 
 @interface NVSearchViewController ()
 @property (nonatomic, strong) UISearchBar *bar;
-@property (nonatomic, strong) NSArray *groups;       // [{title, items, type}]
+@property (nonatomic, strong) NSArray *groups;
 @property (nonatomic, copy) NSString *status;
 @end
 
@@ -38,6 +40,13 @@
     [bar resignFirstResponder];
     NSString *q = bar.text;
     if (!q.length) return;
+    if ([NVOffline shared].isOffline) {
+        NSArray *songs = [NVLocalLibrary songsFiltered:q];
+        self.groups = songs.count ? @[@{ @"title": @"Downloaded Songs", @"items": songs, @"type": @(NVItemSong) }] : nil;
+        self.status = songs.count ? nil : @"No downloaded songs match.";
+        [self.tableView reloadData];
+        return;
+    }
     self.status = @"Searching\u2026"; self.groups = nil; [self.tableView reloadData];
     [[NVClient shared] request:@"search3" params:@{ @"query": q, @"artistCount": @10, @"albumCount": @20, @"songCount": @50 }
                     completion:^(NSDictionary *r, NSError *e) {

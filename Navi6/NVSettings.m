@@ -8,7 +8,7 @@ NSString *NVMusicDirectory(void) {
         dir = [docs stringByAppendingPathComponent:@"Music"];
         [[NSFileManager defaultManager] createDirectoryAtPath:[dir stringByAppendingPathComponent:@"covers"]
                                   withIntermediateDirectories:YES attributes:nil error:nil];
-        // don't let iCloud/iTunes back up gigabytes of music
+
         [[NSURL fileURLWithPath:dir] setResourceValue:@YES forKey:NSURLIsExcludedFromBackupKey error:nil];
     });
     return dir;
@@ -39,10 +39,14 @@ static NSDictionary *NVKeychainQuery(void) {
 }
 - (void)setTranscodeBitrate:(NSInteger)v { [[NSUserDefaults standardUserDefaults] setInteger:v forKey:@"transcodeBitrate"]; }
 
-// Keychain needs entitlements. Unsigned / "fake-signed" builds on a jailbroken device (JailCoder etc.) can't use it:
-// SecItemAdd fails and the password would silently come back empty, which the server reports as "wrong password".
-// So: try the Keychain, verify it really round-trips, otherwise fall back to NSUserDefaults.
+static BOOL NVKeychainUsable(void) {
+    static BOOL ok; static dispatch_once_t once;
+    dispatch_once(&once, ^{ ok = [[NSBundle mainBundle] pathForResource:@"embedded" ofType:@"mobileprovision"] != nil; });
+    return ok;
+}
+
 static NSString *NVKeychainGet(void) {
+    if (!NVKeychainUsable()) return nil;
     NSMutableDictionary *q = [NVKeychainQuery() mutableCopy];
     q[(__bridge id)kSecReturnData] = @YES;
     CFTypeRef res = NULL;
@@ -61,14 +65,26 @@ static NSString *NVKeychainGet(void) {
 
 - (void)setPassword:(NSString *)p {
     NSUserDefaults *d = [NSUserDefaults standardUserDefaults];
-    SecItemDelete((__bridge CFDictionaryRef)NVKeychainQuery());
+    if (NVKeychainUsable()) SecItemDelete((__bridge CFDictionaryRef)NVKeychainQuery());
     [d removeObjectForKey:@"passwordFallback"];
     if (!p.length) return;
-    NSMutableDictionary *q = [NVKeychainQuery() mutableCopy];
-    q[(__bridge id)kSecValueData] = [p dataUsingEncoding:NSUTF8StringEncoding];
-    SecItemAdd((__bridge CFDictionaryRef)q, NULL);
+    if (NVKeychainUsable()) {
+        NSMutableDictionary *q = [NVKeychainQuery() mutableCopy];
+        q[(__bridge id)kSecValueData] = [p dataUsingEncoding:NSUTF8StringEncoding];
+        SecItemAdd((__bridge CFDictionaryRef)q, NULL);
+    }
     if (![NVKeychainGet() isEqualToString:p]) [d setObject:p forKey:@"passwordFallback"];
 }
+
+- (NSInteger)maxConcurrentDownloads {
+    NSInteger v = [[NSUserDefaults standardUserDefaults] integerForKey:@"maxConcurrentDownloads"];
+    return (v >= 1 && v <= 3) ? v : 1;
+}
+- (void)setMaxConcurrentDownloads:(NSInteger)v { [[NSUserDefaults standardUserDefaults] setInteger:v forKey:@"maxConcurrentDownloads"]; }
+- (NSInteger)lyricsSource { return [[NSUserDefaults standardUserDefaults] integerForKey:@"lyricsSource"]; }
+- (void)setLyricsSource:(NSInteger)v { [[NSUserDefaults standardUserDefaults] setInteger:v forKey:@"lyricsSource"]; }
+- (BOOL)offlineMode { return [[NSUserDefaults standardUserDefaults] boolForKey:@"offlineMode"]; }
+- (void)setOfflineMode:(BOOL)v { [[NSUserDefaults standardUserDefaults] setBool:v forKey:@"offlineMode"]; }
 
 - (BOOL)isConfigured { return self.serverURL.length && self.username.length; }
 

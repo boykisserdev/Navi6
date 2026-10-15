@@ -10,18 +10,26 @@
 		872F1E56A01302EFA5861BE8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = A47F12E8AE0EA31991E87378 /* AppDelegate.m */; };
 		D9F31D27F85D96F37DE5B51C /* NVAlbumGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F6F284AC80118BA35DC0471 /* NVAlbumGridViewController.m */; };
 		4A4BC16433E8E6FAF3370D13 /* NVBrowserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C08879083D8A17E47BE603 /* NVBrowserViewController.m */; };
+		78B65A815A48C5647F9FA097 /* NVCache.m in Sources */ = {isa = PBXBuildFile; fileRef = F5B853101AE30E57471AF982 /* NVCache.m */; };
 		650290A8C327D0749B611215 /* NVCells.m in Sources */ = {isa = PBXBuildFile; fileRef = 8D6A78DE225561A0AE33A777 /* NVCells.m */; };
 		0386AD80C5CB87693662C4DC /* NVClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 0899E55EDD359FFB8D106F73 /* NVClient.m */; };
 		5BD70AB31626A1A63A105677 /* NVDownloadManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C90FAB09493EF7550B0355D4 /* NVDownloadManager.m */; };
 		958D849EBBA345C1FF85A4DD /* NVDownloadsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 227C7ED737B55880BCB6F868 /* NVDownloadsViewController.m */; };
 		917545EA5B7D4894D45C5B7B /* NVFavorites.m in Sources */ = {isa = PBXBuildFile; fileRef = BDC6524AAA07D0F606AA3927 /* NVFavorites.m */; };
 		2A7BBA592B0C22F4E2231750 /* NVFavoritesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D721E7ED9045AB1227995E85 /* NVFavoritesViewController.m */; };
+		35FCDAEB6DF74947B15F957C /* NVImageViewerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2ADE950570529716B2D17C7D /* NVImageViewerController.m */; };
+		6F29DA886915DF0C1673366B /* NVLocalLibrary.m in Sources */ = {isa = PBXBuildFile; fileRef = 77EA88BDFC72414C7F21FF08 /* NVLocalLibrary.m */; };
+		DF743C6B897E353EE589BE03 /* NVLog.m in Sources */ = {isa = PBXBuildFile; fileRef = DED7D8F8C2D0EF7D25C97577 /* NVLog.m */; };
+		3B2E44D2C02E04B344D1B8DD /* NVLyrics.m in Sources */ = {isa = PBXBuildFile; fileRef = B46AF7B70D5C543149F9C5BB /* NVLyrics.m */; };
 		4A106B1477CE769B5C36667F /* NVMiniPlayerView.m in Sources */ = {isa = PBXBuildFile; fileRef = 66193FAA6EE18F1527E4BDFA /* NVMiniPlayerView.m */; };
 		C60313C6F5DF37A96CBBD968 /* NVNowPlayingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 16E814CDA8786D9E74B39FFC /* NVNowPlayingViewController.m */; };
+		109507956122C9C687283516 /* NVOffline.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D1FCD710040D1A20C141339 /* NVOffline.m */; };
 		21BC973932744447C4B2D096 /* NVPlayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 31E02D1BDEDBD203C263D68B /* NVPlayer.m */; };
+		0A43FD82A41D0E0AFED6D085 /* NVPlaylists.m in Sources */ = {isa = PBXBuildFile; fileRef = FD7057ED2A12AFFD273F2395 /* NVPlaylists.m */; };
 		E9101D28C790202FF91E84F1 /* NVSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FC9542C9E2355D6D3928DDC7 /* NVSearchViewController.m */; };
 		F93C151EAFCA94E1B3146BF2 /* NVSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = B525B233813648621C432418 /* NVSettings.m */; };
 		A2B8AFB4AE5B5632AC87B4FC /* NVSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B45FD86F17245BBE3B01D194 /* NVSettingsViewController.m */; };
+		3263B01137CE2EC1CAE0BF41 /* NVShare.m in Sources */ = {isa = PBXBuildFile; fileRef = A7425BEFAC0C1F684AB99D32 /* NVShare.m */; };
 		9C16E81EDC7D046958165303 /* NVTheme.m in Sources */ = {isa = PBXBuildFile; fileRef = F1632737B09F0B0EBE324303 /* NVTheme.m */; };
 		6758156D7D91140D48E83AF5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = D530188B72B1D303AB0C582A /* main.m */; };
 		234F268CA64282D247176BDD /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E0016568252D6527E0C0672A /* UIKit.framework */; };
@@ -32,6 +40,7 @@
 		364ED4235C769970F87BD116 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1BA0D68DA17FB86DC6526EFA /* CoreMedia.framework */; };
 		EA30839236A8818EE7FDB8A4 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 56A6662673C29F05FAA86D67 /* Security.framework */; };
 		FBA9BCA93C5D8B9F556D73E9 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3A105AAA559B754B763B78D8 /* QuartzCore.framework */; };
+		9770885FADDE0394DF8DD4A5 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AD5E8583B403F4C16F843317 /* SystemConfiguration.framework */; };
 		C201C6AE68BE1530D1088320 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BCE0C3FDD16871119267D8A5 /* Default-568h@2x.png */; };
 		64143CABE0FD87178478177D /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 23224BBA3ED11C9F5FF18F1D /* Default-Landscape~ipad.png */; };
 		015E8B6BDFCFC6F515AE4504 /* Default-Landscape~ipad@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = A07DBD319FD321E780B24926 /* Default-Landscape~ipad@2x.png */; };
@@ -63,6 +72,8 @@
 		6F6F284AC80118BA35DC0471 /* NVAlbumGridViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVAlbumGridViewController.m; sourceTree = "<group>"; };
 		1C4BEFFBFD7F3E5D9342B474 /* NVBrowserViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVBrowserViewController.h; sourceTree = "<group>"; };
 		90C08879083D8A17E47BE603 /* NVBrowserViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVBrowserViewController.m; sourceTree = "<group>"; };
+		89E8BE2DE75857886634A076 /* NVCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVCache.h; sourceTree = "<group>"; };
+		F5B853101AE30E57471AF982 /* NVCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVCache.m; sourceTree = "<group>"; };
 		1EF18A6AF4748FEA1BC612E8 /* NVCells.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVCells.h; sourceTree = "<group>"; };
 		8D6A78DE225561A0AE33A777 /* NVCells.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVCells.m; sourceTree = "<group>"; };
 		ADBF1B21C17F2B02137A54B9 /* NVClient.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVClient.h; sourceTree = "<group>"; };
@@ -75,18 +86,32 @@
 		BDC6524AAA07D0F606AA3927 /* NVFavorites.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVFavorites.m; sourceTree = "<group>"; };
 		F632681CD028C9C1B0FB36B6 /* NVFavoritesViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVFavoritesViewController.h; sourceTree = "<group>"; };
 		D721E7ED9045AB1227995E85 /* NVFavoritesViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVFavoritesViewController.m; sourceTree = "<group>"; };
+		837A520CFE97D19CE9AE91EB /* NVImageViewerController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVImageViewerController.h; sourceTree = "<group>"; };
+		2ADE950570529716B2D17C7D /* NVImageViewerController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVImageViewerController.m; sourceTree = "<group>"; };
+		F1D1F5093EFBB6CF5E07DB8B /* NVLocalLibrary.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVLocalLibrary.h; sourceTree = "<group>"; };
+		77EA88BDFC72414C7F21FF08 /* NVLocalLibrary.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVLocalLibrary.m; sourceTree = "<group>"; };
+		C4EB4177758B6EF9FA9945DF /* NVLog.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVLog.h; sourceTree = "<group>"; };
+		DED7D8F8C2D0EF7D25C97577 /* NVLog.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVLog.m; sourceTree = "<group>"; };
+		5333601A5EA8496AA1297C54 /* NVLyrics.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVLyrics.h; sourceTree = "<group>"; };
+		B46AF7B70D5C543149F9C5BB /* NVLyrics.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVLyrics.m; sourceTree = "<group>"; };
 		446240FA7D7BCAB3A11D7620 /* NVMiniPlayerView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVMiniPlayerView.h; sourceTree = "<group>"; };
 		66193FAA6EE18F1527E4BDFA /* NVMiniPlayerView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVMiniPlayerView.m; sourceTree = "<group>"; };
 		4075E21858025E904FD36C0F /* NVNowPlayingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVNowPlayingViewController.h; sourceTree = "<group>"; };
 		16E814CDA8786D9E74B39FFC /* NVNowPlayingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVNowPlayingViewController.m; sourceTree = "<group>"; };
+		020F5D63E1D59708995E156B /* NVOffline.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVOffline.h; sourceTree = "<group>"; };
+		2D1FCD710040D1A20C141339 /* NVOffline.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVOffline.m; sourceTree = "<group>"; };
 		CA1DC806B96F45CCEF2ADCC4 /* NVPlayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVPlayer.h; sourceTree = "<group>"; };
 		31E02D1BDEDBD203C263D68B /* NVPlayer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVPlayer.m; sourceTree = "<group>"; };
+		D8500DCA974FE599D8C2253B /* NVPlaylists.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVPlaylists.h; sourceTree = "<group>"; };
+		FD7057ED2A12AFFD273F2395 /* NVPlaylists.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVPlaylists.m; sourceTree = "<group>"; };
 		2BD8E99519EF592F1033F269 /* NVSearchViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVSearchViewController.h; sourceTree = "<group>"; };
 		FC9542C9E2355D6D3928DDC7 /* NVSearchViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVSearchViewController.m; sourceTree = "<group>"; };
 		19AD6329F2359CAC598FBD01 /* NVSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVSettings.h; sourceTree = "<group>"; };
 		B525B233813648621C432418 /* NVSettings.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVSettings.m; sourceTree = "<group>"; };
 		5E68033FB700427CB6EF8C33 /* NVSettingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVSettingsViewController.h; sourceTree = "<group>"; };
 		B45FD86F17245BBE3B01D194 /* NVSettingsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVSettingsViewController.m; sourceTree = "<group>"; };
+		BA7380399772BFD5F4CF95AC /* NVShare.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVShare.h; sourceTree = "<group>"; };
+		A7425BEFAC0C1F684AB99D32 /* NVShare.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVShare.m; sourceTree = "<group>"; };
 		110BEF0D140506EC3947E1C5 /* NVTheme.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NVTheme.h; sourceTree = "<group>"; };
 		F1632737B09F0B0EBE324303 /* NVTheme.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NVTheme.m; sourceTree = "<group>"; };
 		D55FD2661A8A8D7F68F6AF63 /* Navi6-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Navi6-Info.plist; sourceTree = "<group>"; };
@@ -100,6 +125,7 @@
 		1BA0D68DA17FB86DC6526EFA /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		56A6662673C29F05FAA86D67 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		3A105AAA559B754B763B78D8 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		AD5E8583B403F4C16F843317 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		B1BBC4C8BC92635B607E95C6 /* Navi6.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Navi6.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -116,6 +142,7 @@
 				364ED4235C769970F87BD116 /* CoreMedia.framework in Frameworks */,
 				EA30839236A8818EE7FDB8A4 /* Security.framework in Frameworks */,
 				FBA9BCA93C5D8B9F556D73E9 /* QuartzCore.framework in Frameworks */,
+				9770885FADDE0394DF8DD4A5 /* SystemConfiguration.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -151,6 +178,8 @@
 				6F6F284AC80118BA35DC0471 /* NVAlbumGridViewController.m */,
 				1C4BEFFBFD7F3E5D9342B474 /* NVBrowserViewController.h */,
 				90C08879083D8A17E47BE603 /* NVBrowserViewController.m */,
+				89E8BE2DE75857886634A076 /* NVCache.h */,
+				F5B853101AE30E57471AF982 /* NVCache.m */,
 				1EF18A6AF4748FEA1BC612E8 /* NVCells.h */,
 				8D6A78DE225561A0AE33A777 /* NVCells.m */,
 				ADBF1B21C17F2B02137A54B9 /* NVClient.h */,
@@ -163,18 +192,32 @@
 				BDC6524AAA07D0F606AA3927 /* NVFavorites.m */,
 				F632681CD028C9C1B0FB36B6 /* NVFavoritesViewController.h */,
 				D721E7ED9045AB1227995E85 /* NVFavoritesViewController.m */,
+				837A520CFE97D19CE9AE91EB /* NVImageViewerController.h */,
+				2ADE950570529716B2D17C7D /* NVImageViewerController.m */,
+				F1D1F5093EFBB6CF5E07DB8B /* NVLocalLibrary.h */,
+				77EA88BDFC72414C7F21FF08 /* NVLocalLibrary.m */,
+				C4EB4177758B6EF9FA9945DF /* NVLog.h */,
+				DED7D8F8C2D0EF7D25C97577 /* NVLog.m */,
+				5333601A5EA8496AA1297C54 /* NVLyrics.h */,
+				B46AF7B70D5C543149F9C5BB /* NVLyrics.m */,
 				446240FA7D7BCAB3A11D7620 /* NVMiniPlayerView.h */,
 				66193FAA6EE18F1527E4BDFA /* NVMiniPlayerView.m */,
 				4075E21858025E904FD36C0F /* NVNowPlayingViewController.h */,
 				16E814CDA8786D9E74B39FFC /* NVNowPlayingViewController.m */,
+				020F5D63E1D59708995E156B /* NVOffline.h */,
+				2D1FCD710040D1A20C141339 /* NVOffline.m */,
 				CA1DC806B96F45CCEF2ADCC4 /* NVPlayer.h */,
 				31E02D1BDEDBD203C263D68B /* NVPlayer.m */,
+				D8500DCA974FE599D8C2253B /* NVPlaylists.h */,
+				FD7057ED2A12AFFD273F2395 /* NVPlaylists.m */,
 				2BD8E99519EF592F1033F269 /* NVSearchViewController.h */,
 				FC9542C9E2355D6D3928DDC7 /* NVSearchViewController.m */,
 				19AD6329F2359CAC598FBD01 /* NVSettings.h */,
 				B525B233813648621C432418 /* NVSettings.m */,
 				5E68033FB700427CB6EF8C33 /* NVSettingsViewController.h */,
 				B45FD86F17245BBE3B01D194 /* NVSettingsViewController.m */,
+				BA7380399772BFD5F4CF95AC /* NVShare.h */,
+				A7425BEFAC0C1F684AB99D32 /* NVShare.m */,
 				110BEF0D140506EC3947E1C5 /* NVTheme.h */,
 				F1632737B09F0B0EBE324303 /* NVTheme.m */,
 				D55FD2661A8A8D7F68F6AF63 /* Navi6-Info.plist */,
@@ -195,6 +238,7 @@
 				1BA0D68DA17FB86DC6526EFA /* CoreMedia.framework */,
 				56A6662673C29F05FAA86D67 /* Security.framework */,
 				3A105AAA559B754B763B78D8 /* QuartzCore.framework */,
+				AD5E8583B403F4C16F843317 /* SystemConfiguration.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -282,18 +326,26 @@
 				872F1E56A01302EFA5861BE8 /* AppDelegate.m in Sources */,
 				D9F31D27F85D96F37DE5B51C /* NVAlbumGridViewController.m in Sources */,
 				4A4BC16433E8E6FAF3370D13 /* NVBrowserViewController.m in Sources */,
+				78B65A815A48C5647F9FA097 /* NVCache.m in Sources */,
 				650290A8C327D0749B611215 /* NVCells.m in Sources */,
 				0386AD80C5CB87693662C4DC /* NVClient.m in Sources */,
 				5BD70AB31626A1A63A105677 /* NVDownloadManager.m in Sources */,
 				958D849EBBA345C1FF85A4DD /* NVDownloadsViewController.m in Sources */,
 				917545EA5B7D4894D45C5B7B /* NVFavorites.m in Sources */,
 				2A7BBA592B0C22F4E2231750 /* NVFavoritesViewController.m in Sources */,
+				35FCDAEB6DF74947B15F957C /* NVImageViewerController.m in Sources */,
+				6F29DA886915DF0C1673366B /* NVLocalLibrary.m in Sources */,
+				DF743C6B897E353EE589BE03 /* NVLog.m in Sources */,
+				3B2E44D2C02E04B344D1B8DD /* NVLyrics.m in Sources */,
 				4A106B1477CE769B5C36667F /* NVMiniPlayerView.m in Sources */,
 				C60313C6F5DF37A96CBBD968 /* NVNowPlayingViewController.m in Sources */,
+				109507956122C9C687283516 /* NVOffline.m in Sources */,
 				21BC973932744447C4B2D096 /* NVPlayer.m in Sources */,
+				0A43FD82A41D0E0AFED6D085 /* NVPlaylists.m in Sources */,
 				E9101D28C790202FF91E84F1 /* NVSearchViewController.m in Sources */,
 				F93C151EAFCA94E1B3146BF2 /* NVSettings.m in Sources */,
 				A2B8AFB4AE5B5632AC87B4FC /* NVSettingsViewController.m in Sources */,
+				3263B01137CE2EC1CAE0BF41 /* NVShare.m in Sources */,
 				9C16E81EDC7D046958165303 /* NVTheme.m in Sources */,
 				6758156D7D91140D48E83AF5 /* main.m in Sources */,
 			);
